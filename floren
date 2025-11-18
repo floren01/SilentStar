@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#9B5DE0">
+    <meta name="description" content="SilentStar - Karaoke untuk yang senang bernyanyi tapi kurang percaya diri">
+    <link rel="manifest" href="#" id="manifestLink">
+    <title>SilentStar - Karaoke Anonim</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        :root {
+            --primary-color: #9B5DE0;
+            --primary-dark: #7a3dc4;
+            --primary-light: #b97ef0;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            margin: 0;
+        }
+        
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        
+        .header {
+            background: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .username-display {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .content {
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .search-box input {
+            border: 2px solid var(--primary-color);
+            border-radius: 25px;
+            padding: 12px 20px 12px 45px;
+            font-size: 16px;
+            width: 100%;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+        }
+        
+        .song-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .song-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(155, 93, 224, 0.2);
+        }
+        
+        .song-card.selected {
+            border-color: var(--primary-color);
+            background: rgba(155, 93, 224, 0.05);
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+        
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+        
+        .filter-option {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .filter-option:hover,
+        .filter-option.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .mic-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            font-size: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 30px auto;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(155, 93, 224, 0.3);
+        }
+        
+        .mic-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(155, 93, 224, 0.4);
+        }
+        
+        .mic-button.recording {
+            animation: pulse 1.5s infinite;
+            background: #ff4757;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(255, 71, 87, 0.3);
+            }
+            50% {
+                transform: scale(1.15);
+                box-shadow: 0 15px 50px rgba(255, 71, 87, 0.5);
+            }
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 480px;
+            width: 100%;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-around;
+            z-index: 999;
+        }
+        
+        .nav-item {
+            text-align: center;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            flex: 1;
+        }
+        
+        .nav-item:hover {
+            background: rgba(155, 93, 224, 0.1);
+        }
+        
+        .nav-item i {
+            font-size: 24px;
+            color: #666;
+            display: block;
+            margin-bottom: 3px;
+        }
+        
+        .nav-item span {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .nav-item.active i,
+        .nav-item.active span {
+            color: var(--primary-color);
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .recording-info {
+            text-align: center;
+            padding: 20px;
+            background: rgba(155, 93, 224, 0.05);
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .recording-timer {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .recording-timer.recording-active {
+            color: #ff4757;
+        }
+        
+        .live-user {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .live-user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: 600;
+        }
+        
+        .invite-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            font-size: 24px;
+            position: fixed;
+            bottom: 100px;
+            right: calc(50% - 220px);
+            box-shadow: 0 5px 20px rgba(155, 93, 224, 0.4);
+            z-index: 998;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .invite-button:hover {
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 500px) {
+            .invite-button {
+                right: 20px;
+            }
+        }
+        
+        .recording-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .recording-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .modal-header {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-close-white {
+            filter: brightness(0) invert(1);
+        }
+        
+        .badge-custom {
+            background: var(--primary-color);
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: white;
+        }
+        
+        .install-prompt {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            text-align: center;
+            cursor: pointer;
+            display: none;
+        }
+        
+        .install-prompt:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Install Prompt -->
+        <div class="install-prompt" id="installPrompt">
+            <i class="fas fa-download"></i> Install SilentStar sebagai aplikasi
+        </div>
+        
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-star"></i> SilentStar</h1>
+            <div class="username-display" id="usernameDisplay">Memuat...</div>
+        </div>
+        
+        <!-- Home Page -->
+        <div id="homePage" class="page active">
+            <div class="content">
+                <h4 class="mb-3">🎤 Cari Lagu</h4>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="form-control" id="searchInput" placeholder="Cari judul lagu atau artis...">
+                </div>
+                
+                <div id="songList">
+                    <!-- Daftar lagu akan muncul di sini -->
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button class="btn btn-primary btn-lg" id="startSingingBtn" disabled>
+                        <i class="fas fa-play"></i> Mulai Menyanyi
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Singing Page -->
+        <div id="singingPage" class="page">
+            <div class="content">
+                <h4 class="mb-3">🎭 Pilih Filter Wajah</h4>
+                <div class="text-center mb-4">
+                    <div class="filter-option active" data-filter="none">Tanpa Filter</div>
+                    <div class="filter-option" data-filter="mask">😷 Masker</div>
+                    <div class="filter-option" data-filter="sunglasses">😎 Kacamata</div>
+                    <div class="filter-option" data-filter="avatar">🐱 Avatar</div>
+                    <div class="filter-option" data-filter="blur">🌫️ Blur</div>
+                </div>
+                
+                <div class="recording-info">
+                    <div id="selectedSongTitle" class="h5 mb-3">Judul Lagu</div>
+                    <div id="filterSelected" class="text-muted mb-3">Filter: Tanpa Filter</div>
+                    <div class="recording-timer" id="recordingTimer">00:00</div>
+                    <div class="text-muted" id="recordingStatus">Klik ikon mic untuk mulai</div>
+                </div>
+                
+                <button class="mic-button" id="micButton">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                
+                <div class="text-center">
+                    <button class="btn btn-primary btn-lg" id="publishBtn" style="display:none;">
+                        <i class="fas fa-upload"></i> Publikasi Rekaman
+                    </button>
+                    <button class="btn btn-outline-secondary" id="backToHomeBtn">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Live Page -->
+        <div id="livePage" class="page">
+            <div class="content">
+                <h4 class="mb-3">🔴 Live Kolaborasi</h4>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Klik tombol <strong>+</strong> untuk mengundang teman bernyanyi bersama!
+                </div>
+                
+                <div id="liveUsers">
+                    <div class="alert alert-secondary">Tidak ada sesi live aktif. Klik "Mulai Live" untuk memulai!</div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button class="btn btn-primary btn-lg" id="startLiveBtn">
+                        <i class="fas fa-broadcast-tower"></i> Mulai Live
+                    </button>
+                    <button class="btn btn-danger btn-lg ms-2" id="stopLiveBtn" style="display:none;">
+                        <i class="fas fa-stop"></i> Stop Live
+                    </button>
+                </div>
+            </div>
+            
+            <button class="invite-button" id="inviteBtn" style="display:none;">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+        
+        <!-- Profile Page -->
+        <div id="profilePage" class="page">
+            <div class="content">
+                <h4 class="mb-3">👤 Profil Anonim</h4>
+                
+                <div class="text-center mb-4">
+                    <div style="width: 100px; height: 100px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto;">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <h5 class="mt-3" id="profileUsername">Username</h5>
+                    <span class="badge-custom">Penyanyi Anonim</span>
+                </div>
+                
+                <h5 class="mb-3">📼 Rekaman Saya</h5>
+                <div class="recording-list" id="recordingList">
+                    <!-- Rekaman akan muncul di sini -->
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button class="btn btn-outline-primary" id="changeUsernameBtn">
+                        <i class="fas fa-edit"></i> Ganti Username
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active" data-page="homePage">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </div>
+            <div class="nav-item" data-page="livePage">
+                <i class="fas fa-broadcast-tower"></i>
+                <span>Live</span>
+            </div>
+            <div class="nav-item" data-page="profilePage">
+                <i class="fas fa-user"></i>
+                <span>Profil</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Invite -->
+    <div class="modal fade" id="inviteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Undang Teman</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bagikan link ini untuk mengundang teman:</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="inviteLink" value="https://silentstar.app/live/12345" readonly>
+                        <button class="btn btn-primary" id="copyLinkBtn">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <small class="text-muted">Link akan disalin ke clipboard</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Change Username -->
+    <div class="modal fade" id="usernameModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ganti Username</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control" id="newUsername" placeholder="Username baru..." maxlength="20">
+                    <small class="text-muted">Maksimal 20 karakter</small>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="saveUsernameBtn">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // PWA Installation
+        let deferredPrompt;
+        const installPrompt = document.getElementById('installPrompt');
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installPrompt.style.display = 'block';
+        });
+        
+        installPrompt.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                installPrompt.style.display = 'none';
+            }
+        });
+        
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `
+                    const CACHE_NAME = 'silentstar-v1';
+                    const urlsToCache = ['/'];
+                    
+                    self.addEventListener('install', event => {
+                        event.waitUntil(
+                            caches.open(CACHE_NAME)
+                                .then(cache => cache.addAll(urlsToCache))
+                        );
+                    });
+                    
+                    self.addEventListener('fetch', event => {
+                        event.respondWith(
+                            caches.match(event.request)
+                                .then(response => response || fetch(event.request))
+                        );
+                    });
+                `;
+                
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(blob);
+                
+                navigator.serviceWorker.register(swUrl)
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed'));
+            });
+        }
+        
+        // Manifest JSON
+        const manifest = {
+            name: 'SilentStar',
+            short_name: 'SilentStar',
+            description: 'Karaoke untuk yang senang bernyanyi tapi kurang percaya diri',
+            start_url: '/',
+            display: 'standalone',
+            background_color: '#9B5DE0',
+            theme_color: '#9B5DE0',
+            icons: [
+                {
+                    src: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="%239B5DE0"/><text x="50" y="65" text-anchor="middle" font-size="50" fill="white">★</text></svg>',
+                    sizes: '192x192',
+                    type: 'image/svg+xml'
+                },
+                {
+                    src: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="%239B5DE0"/><text x="50" y="65" text-anchor="middle" font-size="50" fill="white">★</text></svg>',
+                    sizes: '512x512',
+                    type: 'image/svg+xml'
+                }
+            ]
+        };
+        
+        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+        const manifestURL = URL.createObjectURL(manifestBlob);
+        document.getElementById('manifestLink').setAttribute('href', manifestURL);
+        
+        // Data lagu contoh
+        const songs = [
+            { id: 1, title: "Indonesia Raya", artist: "W.R. Supratman" },
+            { id: 2, title: "Sempurna", artist: "Andra and The Backbone" },
+            { id: 3, title: "Akad", artist: "Payung Teduh" },
+            { id: 4, title: "Menghitung Hari", artist: "Krisdayanti" },
+            { id: 5, title: "Cinta Luar Biasa", artist: "Andmesh Kamaleng" },
+            { id: 6, title: "Bertaut", artist: "Nadin Amizah" },
+            { id: 7, title: "Mesin Waktu", artist: "Budi Doremi" },
+            { id: 8, title: "Lagu Galau", artist: "Five Minutes" },
+            { id: 9, title: "Tetap Dalam Jiwa", artist: "Isyana Sarasvati" },
+            { id: 10, title: "Terlukis Indah", artist: "Rizky Febian" },
+            { id: 11, title: "Lathi", artist: "Weird Genius" },
+            { id: 12, title: "Cuek", artist: "Rizky Febian" }
+        ];
+        
+        // State management
+        let currentUser = null;
+        let selectedSong = null;
+        let selectedFilter = 'none';
+        let isRecording = false;
+        let recordingTime = 0;
+        let recordingInterval = null;
+        let isLive = false;
+        let recordings = [];
+        
+        // Initialize app
+        function initApp() {
+            // Generate atau load username anonim
+            if (!localStorage.getItem('username')) {
+                const randomNames = ['Penyanyi', 'Vocalist', 'Singer', 'Artist', 'Star', 'Melody', 'Harmony'];
+                const randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
+                const randomNum = Math.floor(Math.random() * 9999);
+                currentUser = `${randomName}${randomNum}`;
+                localStorage.setItem('username', currentUser);
+            } else {
+                currentUser = localStorage.getItem('username');
+            }
+            
+            // Load recordings
+            const savedRecordings = localStorage.getItem('recordings');
+            if (savedRecordings) {
+                try {
+                    recordings = JSON.parse(savedRecordings);
+                } catch (e) {
+                    recordings = [];
+                }
+            }
+            
+            updateUsername();
+            renderSongs();
+            renderRecordings();
+        }
+        
+        function updateUsername() {
+            document.getElementById('usernameDisplay').textContent = `🎭 ${currentUser}`;
+            document.getElementById('profileUsername').textContent = currentUser;
+        }
+        
+        function renderSongs(searchTerm = '') {
+            const songList = document.getElementById('songList');
+            const filtered = songs.filter(song => 
+                song.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                song.artist.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            
+            if (filtered.length === 0) {
+                songList.innerHTML = '<div class="alert alert-info"><i class="fas fa-info-circle"></i> Tidak ada lagu ditemukan</div>';
+                return;
+            }
+            
+            songList.innerHTML = filtered.map(song => `
+                <div class="song-card" data-id="${song.id}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${song.title}</strong><br>
+                            <small class="text-muted">${song.artist}</small>
+                        </div>
+                        <i class="fas fa-music" style="color: var(--primary-color); font-size: 24px;"></i>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add click handlers
+            document.querySelectorAll('.song-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.song-card').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    const songId = parseInt(this.dataset.id);
+                    selectedSong = songs.find(s => s.id === songId);
+                    document.getElementById('startSingingBtn').disabled = false;
+                });
+            });
+        }
+        
+        function renderRecordings() {
+            const recordingList = document.getElementById('recordingList');
+            if (recordings.length === 0) {
+                recordingList.innerHTML = '<div class="alert alert-secondary"><i class="fas fa-compact-disc"></i> Belum ada rekaman</div>';
+                return;
+            }
+            
+            recordingList.innerHTML = recordings.map((rec, index) => `
+                <div class="recording-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div style="flex: 1;">
+                            <strong><i class="fas fa-music"></i> ${rec.song}</strong><br>
+                            <small class="text-muted">Filter: ${rec.filter} • ${rec.duration}</small><br>
+                            <small class="text-muted"><i class="fas fa-calendar"></i> ${rec.date}</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteRecording(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        window.deleteRecording = function(index) {
+            if (confirm('Hapus rekaman ini?')) {
+                recordings.splice(index, 1);
+                localStorage.setItem('recordings', JSON.stringify(recordings));
+                renderRecordings();
+            }
+        };
+        
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const pageId = this.dataset.page;
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                document.getElementById(pageId).classList.add('active');
+                this.classList.add('active');
+            });
+        });
+        
+        // Search
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            renderSongs(e.target.value);
+        });
+        
+        // Start singing
+        document.getElementById('startSingingBtn').addEventListener('click', function() {
+            if (selectedSong) {
+                document.getElementById('selectedSongTitle').textContent = `${selectedSong.title} - ${selectedSong.artist}`;
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById('singingPage').classList.add('active');
+            }
+        });
+        
+        // Back to home
+        document.getElementById('backToHomeBtn').addEventListener('click', function() {
+            if (isRecording) {
+                if (!confirm('Rekaman sedang berjalan. Yakin ingin kembali?')) {
+                    return;
+                }
+                stopRecording();
+            }
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('homePage').classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector('.nav-item[data-page="homePage"]').classList.add('active');
+            resetRecording();
+        });
+        
+        // Filter selection
+        document.querySelectorAll('.filter-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.filter-option').forEach(o => o.classList.remove('active'));
+                this.classList.add('active');
+                selectedFilter = this.dataset.filter;
+                const filterNames = {
+                    'none': 'Tanpa Filter',
+                    'mask': 'Masker',
+                    'sunglasses': 'Kacamata',
+                    'avatar': 'Avatar',
+                    'blur': 'Blur'
+                };
+                document.getElementById('filterSelected').textContent = `Filter: ${filterNames[selectedFilter]}`;
+            });
+        });
+        
+        // Recording
+        document.getElementById('micButton').addEventListener('click', function() {
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        });
+        
+        function startRecording() {
+            isRecording = true;
+            recordingTime = 0;
+            const micBtn = document.getElementById('micButton');
+            const timer = document.getElementById('recordingTimer');
+            const status = document.getElementById('recordingStatus');
+            
+            micBtn.classList.add('recording');
+            micBtn.innerHTML = '<i class="fas fa-stop"></i>';
+            timer.classList.add('recording-active');
+            status.textContent = '🔴 Sedang merekam...';
+            
+            recordingInterval = setInterval(() => {
+                recordingTime++;
+                const minutes = Math.floor(recordingTime / 60).toString().padStart(2, '0');
+                const seconds = (recordingTime % 60).toString().padStart(2, '0');
+                timer.textContent = `${minutes}:${seconds}`;
+            }, 1000);
+        }
+        
+        function stopRecording() {
+            isRecording = false;
+            clearInterval(recordingInterval);
+            const micBtn = document.getElementById('micButton');
+            const timer = document.getElementById('recordingTimer');
+            const status = document.getElementById('recordingStatus');
+            
+            micBtn.classList.remove('recording');
+            micBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            timer.classList.remove('recording-active');
+            status.textContent = 'Rekaman selesai! Klik publikasi untuk menyimpan';
+            document.getElementById('publishBtn').style.display = 'inline-block';
+        }
+        
+        function resetRecording() {
+            isRecording = false;
+            recordingTime = 0;
+            clearInterval(recordingInterval);
+            const timer = document.getElementById('recordingTimer');
+            const status = document.getElementById('recordingStatus');
+            const micBtn = document.getElementById('micButton');
+            
+            timer.textContent = '00:00';
+            timer.classList.remove('recording-active');
+            status.textContent = 'Klik ikon mic untuk mulai';
+            micBtn.classList.remove('recording');
+            micBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            document.getElementById('publishBtn').style.display = 'none';
+            selectedFilter = 'none';
+            document.querySelectorAll('.filter-option').forEach(o => o.classList.remove('active'));
+            document.querySelector('.filter-option[data-filter="none"]').classList.add('active');
+            document.getElementById('filterSelected').textContent = 'Filter: Tanpa Filter';
+        }
+        
+        // Publish recording
+        document.getElementById('publishBtn').addEventListener('click', function() {
+            const minutes = Math.floor(recordingTime / 60).toString().padStart(2, '0');
+            const seconds = (recordingTime % 60).toString().padStart(2, '0');
+            const filterNames = {
+                'none': 'Tanpa Filter',
+                'mask': 'Masker',
+                'sunglasses': 'Kacamata',
+                'avatar': 'Avatar',
+                'blur': 'Blur'
+            };
+            
+            const recording = {
+                song: `${selectedSong.title} - ${selectedSong.artist}`,
+                filter: filterNames[selectedFilter],
+                duration: `${minutes}:${seconds}`,
+                date: new Date().toLocaleDateString('id-ID', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                })
+            };
+            
+            recordings.unshift(recording);
+            localStorage.setItem('recordings', JSON.stringify(recordings));
+            
+            alert('✅ Rekaman berhasil dipublikasi!');
+            
+            // Navigate to profile page
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('profilePage').classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector('.nav-item[data-page="profilePage"]').classList.add('active');
+            renderRecordings();
+            resetRecording();
+        });
+        
+        // Live functionality
+        document.getElementById('startLiveBtn').addEventListener('click', function() {
+            isLive = true;
+            this.style.display = 'none';
+            document.getElementById('stopLiveBtn').style.display = 'inline-block';
+            document.getElementById('inviteBtn').style.display = 'block';
+            
+            // Add current user to live
+            const liveUsers = document.getElementById('liveUsers');
+            liveUsers.innerHTML = `
+                <div class="live-user">
+                    <div class="live-user-avatar">${currentUser.charAt(0).toUpperCase()}</div>
+                    <div style="flex: 1;">
+                        <strong>${currentUser}</strong><br>
+                        <small class="text-muted">🎤 Sedang bernyanyi...</small>
+                    </div>
+                    <span class="badge bg-danger">LIVE</span>
+                </div>
+            `;
+        });
+        
+        document.getElementById('stopLiveBtn').addEventListener('click', function() {
+            if (confirm('Akhiri sesi live?')) {
+                isLive = false;
+                this.style.display = 'none';
+                document.getElementById('startLiveBtn').style.display = 'inline-block';
+                document.getElementById('inviteBtn').style.display = 'none';
+                document.getElementById('liveUsers').innerHTML = '<div class="alert alert-secondary">Tidak ada sesi live aktif. Klik "Mulai Live" untuk memulai!</div>';
+            }
+        });
+        
+        // Invite modal
+        const inviteModal = new bootstrap.Modal(document.getElementById('inviteModal'));
+        document.getElementById('inviteBtn').addEventListener('click', function() {
+            // Generate unique link
+            const roomId = Math.random().toString(36).substring(2, 10);
+            document.getElementById('inviteLink').value = `https://silentstar.app/live/${roomId}`;
+            inviteModal.show();
+        });
+        
+        document.getElementById('copyLinkBtn').addEventListener('click', function() {
+            const link = document.getElementById('inviteLink');
+            link.select();
+            link.setSelectionRange(0, 99999); // For mobile devices
+            
+            // Modern clipboard API
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(link.value).then(() => {
+                    const btn = this;
+                    const originalHTML = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i>';
+                    btn.classList.add('btn-success');
+                    btn.classList.remove('btn-primary');
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.classList.add('btn-primary');
+                        btn.classList.remove('btn-success');
+                    }, 2000);
+                });
+            } else {
+                // Fallback for older browsers
+                document.execCommand('copy');
+                alert('✅ Link berhasil disalin!');
+            }
+        });
+        
+        // Username modal
+        const usernameModal = new bootstrap.Modal(document.getElementById('usernameModal'));
+        document.getElementById('changeUsernameBtn').addEventListener('click', function() {
+            document.getElementById('newUsername').value = currentUser;
+            usernameModal.show();
+        });
+        
+        document.getElementById('saveUsernameBtn').addEventListener('click', function() {
+            const newUsername = document.getElementById('newUsername').value.trim();
+            if (newUsername && newUsername.length > 0) {
+                currentUser = newUsername;
+                localStorage.setItem('username', currentUser);
+                updateUsername();
+                usernameModal.hide();
+                
+                // Show success message
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3';
+                alertDiv.style.zIndex = '9999';
+                alertDiv.innerHTML = '<i class="fas fa-check-circle"></i> Username berhasil diubah!';
+                document.body.appendChild(alertDiv);
+                
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 3000);
+            } else {
+                alert('Username tidak boleh kosong!');
+            }
+        });
+        
+        // Initialize app when DOM is loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
+    </script>
+</body>
+</html>
